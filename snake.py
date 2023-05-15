@@ -1,17 +1,24 @@
 from turtle import Turtle
-
+STARTING_POSITIONS = [(0, 0), (-20, 0), (-40, 0)]
 
 class Snake(Turtle):
-    snake_body = []
 
     def __init__(self):
         super().__init__()
-        for i in range(3):
-            timmy = Turtle("square")
-            timmy.color("white")
-            timmy.penup()
-            timmy.goto(i * -20, 0)
-            self.snake_body.append(timmy)
+        self.snake_body = []
+        self.create_snake()
+        self.head = self.snake_body[0]
+
+    def create_snake(self):
+        for position in STARTING_POSITIONS:
+            self.add_segment(position)
+
+    def add_segment(self, position):
+        new_segment = Turtle("square")
+        new_segment.color("white")
+        new_segment.penup()
+        new_segment.goto(position)
+        self.snake_body.append(new_segment)
 
     def move(self):
         for i in range(len(self.snake_body) - 1, 0, -1):
@@ -35,8 +42,11 @@ class Snake(Turtle):
             self.snake_body[0].setheading(270)
 
     def grow(self):
-        timmy = Turtle("square")
-        timmy.color("white")
-        timmy.penup()
-        timmy.goto(self.snake_body[-1].position())
-        self.snake_body.append(timmy)
+        self.add_segment(self.snake_body[-1].position())
+
+    def reset(self):
+        for segments in self.snake_body:
+            segments.hideturtle()
+        self.snake_body.clear()
+        self.create_snake()
+        self.head = self.snake_body[0]

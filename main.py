@@ -14,6 +14,12 @@ snake = Snake()
 food = Food()
 scoreboard = Scoreboard()
 
+screen.listen()
+screen.onkeypress(key="Up", fun=snake.move_up)
+screen.onkeypress(key="Left", fun=snake.move_left)
+screen.onkeypress(key="Right", fun=snake.move_right)
+screen.onkeypress(key="Down", fun=snake.move_down)
+
 game_running = True
 
 while game_running:
@@ -22,24 +28,20 @@ while game_running:
 
     snake.move()
 
-    screen.listen()
-    screen.onkeypress(key="Up", fun=snake.move_up)
-    screen.onkeypress(key="Left", fun=snake.move_left)
-    screen.onkeypress(key="Right", fun=snake.move_right)
-    screen.onkeypress(key="Down", fun=snake.move_down)
-
     if snake.snake_body[0].distance(food) < 15:
         snake.grow()
         scoreboard.increase_score()
         food.refresh()
 
-    if snake.snake_body[0].xcor() < -290 or snake.snake_body[0].xcor() > 290 or snake.snake_body[0].ycor() < -290 or snake.snake_body[0].ycor() > 290:
-        game_running = False
-        scoreboard.game_over()
+    if snake.head.xcor() < -290 or snake.head.xcor() > 290 or snake.head.ycor() < -290 or snake.head.ycor() > 290:
+        scoreboard.reset()
+        snake.reset()
 
-    for segment in snake.snake_body[1::]:
-        if snake.snake_body[0].distance(segment) < 10:
-            game_running = False
-            scoreboard.game_over()
+    for segment in snake.snake_body:
+        if segment == snake.head:
+            pass
+        elif snake.head.distance(segment) < 10:
+            scoreboard.reset()
+            snake.reset()
 
 screen.exitonclick()
